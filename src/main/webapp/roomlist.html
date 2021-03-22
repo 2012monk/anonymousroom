@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANOCHAT</title>
+    <link rel="stylesheet" href="css/roomlist.css">
+</head>
+    
+<section>
+    <div id="title-main">
+        anochat
+    </div>
+    <div style="overflow: scroll" id="room-list">
+        <div id="room-create">
+            <button class="formbtn" id="creat-btn">create</button>
+            <form class="search form">
+                <input class="place" type="text" placeholder="검색하실 방이름을 입력하세요" >
+                <input class="formbtn search-btn subtn" type="submit" value="search">
+            </form>
+            <form class="create form hidden" method="post" action="http://localhost:47788/1">
+                <input class="place" id="roomName" type="text" name="roomname" placeholder="채팅방 이름"/>
+                <input class="formbtn subtn" type="submit" value="create" />
+            </form>
+        </div>
+        <ul class="result hidden">
+        </ul>
+        <ul class="list">
+        </ul>
+    </div>
+
+    
+
+
+</section>
+
+<body>
+
+</body>
+<script src="js/roomlist.js"></script>
+</html>
