@@ -6,6 +6,8 @@ import com.anoroom.model.AnoRoom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.websocket.Session;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,21 +43,20 @@ public class AnoService {
 
 
     public void update() {
-//        for (String s:roomList.keySet()){
-//            Set<String> set = roomList.get(s).getUserSet();
-//            if (set.isEmpty()) roomList.remove(s);
-//            else {
-//                mainServlet.updateUserList(roomList.get(s).getRoomName(), set);
-//            }
-//        }
-
+        ArrayList<String[]> a = new ArrayList<>();
         for (AnoRoom r: roomList.values()){
-            if (r.isEmpty()) roomList.remove(r.getRoomId());
-            else{
+            if (r.isEmpty()) {
+                roomList.remove(r.getRoomId());
+            }else{
                 Set<String > s= r.getUserSet();
-                mainServlet.updateUserList(r.getRoomName(),  s);
+                mainServlet.updateUserList(r.getRoomId(),  s);
+//                a.add(r.getRoomName());
+
+                a.add(new String[]{r.getRoomName(), String.valueOf(r.getUserSet().size())});
             }
         }
+
+        mainServlet.updateRoomList(a);
 
     }
 

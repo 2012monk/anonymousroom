@@ -6,10 +6,12 @@ const ul = document.querySelector("#room-list .list");
 
 
 
-document.querySelector('ul').addEventListener('click', function (e) {
+document.querySelector('.result').addEventListener('click', sendRoom);
+document.querySelector('.list').addEventListener('click', sendRoom);
+
+function sendRoom(e) {
     const li = e.target;
     if (li.nodeName !== 'LI') return;
-    console.log(li);
     const form = document.createElement('form');
     const input = document.createElement('input');
     form.method = 'POST';
@@ -17,13 +19,11 @@ document.querySelector('ul').addEventListener('click', function (e) {
 
     input.type = 'text';
     input.name = 'roomname';
-    input.value = li.innerText;
+    input.value = li.name;
     form.appendChild(input);
     document.documentElement.appendChild(form);
     form.submit();
-    // window.
-});
-
+}
 
 function ajax() {
     const httpRequest = new XMLHttpRequest();
@@ -39,15 +39,18 @@ function ajax() {
                     ul.removeChild(ul.firstChild);
                 }
 
-                for (let s in list){
+                for (let s=0;s<list.length;s++){
+                // for (let s in list) {
+                    console.log(list);
                     const li = document.createElement("li");
                     const span = document.createElement('span');
-                    span.innerText = `현재 인원 : ${list[s].length}`
-                    li.innerText = `방 제목 : ${s}`;
+                    span.innerText = `현재 인원 : ${JSON.stringify(list[s][1]).replaceAll("\"","")}`
+                    li.innerText = `방 제목 : ${JSON.stringify(list[s][0]).replaceAll("\"","")}`;
+                    // li.name = s;
                     li.appendChild(span);
                     ul.appendChild(li);
-
                 }
+                // }
             } else {
                 console.log(httpRequest.status);
             }
@@ -55,29 +58,13 @@ function ajax() {
     }
 
     httpRequest.open("GET", roomListUrl+'roomList');
-    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
     httpRequest.send();
 
 }
 
 
-function getRoom(){
-    console.log('adf');
-    const httpRequest  = new XMLHttpRequest();
-    if (httpRequest===null) console.log("no");
-    httpRequest.onreadystatechange = e => {
-        if (httpRequest.readyState === XMLHttpRequest.DONE){
-            if (httpRequest.status === 200){
-                const data = httpRequest.responseText;
-                document.getElementsByName("html").innerHTML = data;
 
-            }
-        }
-    }
-    httpRequest.open('POST', _url);
-
-
-}
 
 function open(ev) {
     const value = ev.target.innerText;

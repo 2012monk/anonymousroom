@@ -7,12 +7,13 @@ let msg = {
 };
 const msgInput = document.getElementById("text-input");
 const ul = document.querySelector("#msg-area ul");
-document.querySelector("form").addEventListener("submit", send);
+
 const userList = document.getElementById('user-list');
 
 const params = new URLSearchParams(window.location.search);
 const roomName = params.get("roomname")
 msg.roomName = roomName;
+
 document.getElementById("room-name").innerText = roomName;
 document.querySelector('title').innerText = roomName;
 
@@ -21,7 +22,6 @@ document.querySelector('title').innerText = roomName;
 const _url = "ws://localhost:47788/ano/"+roomName;
 const _URL = "http://localhost:47788/main/"
 const socket = new WebSocket(_url);
-
 
 function send(e) {
     e.preventDefault();
@@ -45,8 +45,6 @@ socket.onmessage = function (e) {
     }
     first++;
 
-
-    // li.innerText += (response.id).substr(0, 10);
     li.innerText += response.senderId.split("-")[0];
     li.innerText += ":"
     li.innerText += response.msg;
@@ -94,12 +92,14 @@ function updateUserList(e) {
         }
     }
 
-    rq.open('GET',_URL+`userList?roomId=${roomName}`);
+    rq.open('GET',_URL+`userList?roomId=${msg.roomId}`);
+    rq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
     rq.send()
 }
 
 
 window.setInterval(updateUserList, 4000);
+document.querySelector("form").addEventListener("submit", send);
 
 
 
