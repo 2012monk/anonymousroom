@@ -14,7 +14,8 @@ public class AnoServer {
     AnoService service = new AnoService();
 
     @OnOpen
-    public void open(Session session, @PathParam("roomname")String roomName){
+    public void open(Session session, @PathParam("roomname")String roomName,
+                     @PathParam("method")String isCreate){
         AnoRoom room = service.findRoomByName(roomName);
         if (room == null) {
             room = service.createRoom(roomName);

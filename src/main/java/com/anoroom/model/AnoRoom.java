@@ -1,6 +1,7 @@
 package com.anoroom.model;
 
 import com.anoroom.anocontrol.AnoService;
+import com.anoroom.dbcontrol.StoreUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.websocket.Session;
@@ -8,7 +9,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnoRoom {
 
@@ -16,11 +16,18 @@ public class AnoRoom {
     private final String roomId;
     private final String roomName;
     private final Set<Session> memberList;
-    private final ConcurrentHashMap<String, Session> list = new ConcurrentHashMap<>();
     private AnoMessage msg;
     private AnoService service;
+    private final StoreUnit store = new StoreUnit();
 
 
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
 
     public Set<String> getUserSet() {
         Set<String> s = Collections.synchronizedSet(new HashSet<>());
@@ -33,13 +40,15 @@ public class AnoRoom {
     public AnoRoom (String roomName){
         this.roomName = roomName;
         this.roomId = UUID.randomUUID().toString();
-        msg = new AnoMessage(roomName, roomId);
+//        msg = new AnoMessage(roomName, roomId);
         this.memberList = new HashSet<>();
     }
 
-//    public AnoRoom (String roomName, AnoService service){
-//        this.service = service;
-//    }
+    public AnoRoom (String roomName, String roomId) {
+        this.roomName = roomName;
+        this.roomId = roomId;
+        this.memberList = new HashSet<>();
+    }
 
     public boolean isEmpty() {
 
@@ -58,11 +67,7 @@ public class AnoRoom {
             try {
                 String senderID = UUID.randomUUID().toString();
                 session.getUserProperties().put("senderId", senderID);
-//                msg.setSenderId(senderID);
-//                String json = mapper.writeValueAsString(msg);
-//                session.getBasicRemote().sendText(json);
-
-
+                System.out.println(store.sendUserInfo(session));
                 memberList.add(session);
                 System.out.println(senderID + "client Add" + getRoomName());
             } catch (Exception e) {
@@ -79,13 +84,6 @@ public class AnoRoom {
         return sb.toString();
     }
 
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
 
     public void sendMsgRoom (String reqMsg) {
         for (Session a: memberList){

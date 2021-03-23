@@ -18,8 +18,6 @@ public class Main extends HttpServlet {
     private static final LinkedList<String[]> roomList = new LinkedList<>();
     private static final AnoService service = new AnoService();
 
-
-
     public void updateUserList(String roomId, Set<String> userSet) {
         userList.put(roomId, userSet);
     }

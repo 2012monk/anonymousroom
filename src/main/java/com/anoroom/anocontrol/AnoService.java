@@ -1,12 +1,15 @@
 package com.anoroom.anocontrol;
 
 import com.anoroom.anoserver.Main;
+import com.anoroom.dbcontrol.FetchUnit;
+import com.anoroom.dbcontrol.StoreUnit;
 import com.anoroom.model.AnoMessage;
 import com.anoroom.model.AnoRoom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.websocket.Session;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,13 +19,21 @@ public class AnoService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final ConcurrentHashMap<String, AnoRoom> roomList = new ConcurrentHashMap<>();
     private static final Main mainServlet = new Main();
+    private final StoreUnit store = new StoreUnit();
 
+    static {
+        HashMap<String, String> set = FetchUnit.fetchRoom();
+        for (String s:set.keySet()) {
+            roomList.put(s, new AnoRoom(set.get(s),s));
+        }
+    }
 
 
     public AnoRoom createRoom(String roomName) {
         AnoRoom room = new AnoRoom(roomName);
         roomList.put(room.getRoomId(), room);
         mainServlet.updateUserList(roomName, room.getUserSet());
+        System.out.println(store.sendNewRoom(room));
         return room;
     }
 
@@ -45,6 +56,7 @@ public class AnoService {
         for (AnoRoom r: roomList.values()){
             if (r.isEmpty()) {
                 roomList.remove(r.getRoomId());
+                store.destroyRoom(r);
             }else{
                 Set<String > s= r.getUserSet();
                 mainServlet.updateUserList(r.getRoomId(),  s);
@@ -95,24 +107,28 @@ public class AnoService {
 
             }
             String vid = sendrID.split("-")[0];
+            parsedMsg.setSenderId(sendrID);
 
             System.out.println(parsedMsg);
             switch (msgType){
                 case ENTER:
-                    parsedMsg.setSenderId("Server");
-                    parsedMsg.setMsg(vid+" : Entered say hi!");
+//                    parsedMsg.setSenderId("Server");
+//                    parsedMsg.setMsg(vid+" : Entered say hi!");
+                    parsedMsg.setMsg("now i'm entered HI!");
                     parsedMsg.setRoomId(room.getRoomId());
                     break;
                 case OUT:
-                    parsedMsg.setSenderId("Server");
-                    parsedMsg.setMsg(vid+" : left the room bye...");
+//                    parsedMsg.setSenderId("Server");
+//                    parsedMsg.setMsg(vid+" : left the room bye...");
+                    parsedMsg.setMsg("i'm leaving this room don't miss me");
                     room.handleClient(session, this);
-                    System.out.println(parsedMsg);
                     break;
                 case MSG:
                     parsedMsg.setSenderId(sendrID);
                     break;
             }
+            System.out.println(store.sendMsgLog(parsedMsg));
+            System.out.println(parsedMsg);
 
 
             String json = mapper.writeValueAsString(parsedMsg);
