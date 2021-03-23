@@ -1,7 +1,6 @@
 package com.anoroom.anoserver;
 
 import com.anoroom.anocontrol.AnoService;
-import com.anoroom.model.AnoMessage;
 import com.anoroom.model.AnoRoom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

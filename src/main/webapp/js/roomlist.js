@@ -19,7 +19,7 @@ function sendRoom(e) {
 
     input.type = 'text';
     input.name = 'roomname';
-    input.value = li.name;
+    input.value = li.id;
     form.appendChild(input);
     document.documentElement.appendChild(form);
     form.submit();
@@ -45,8 +45,8 @@ function ajax() {
                     const li = document.createElement("li");
                     const span = document.createElement('span');
                     span.innerText = `현재 인원 : ${JSON.stringify(list[s][1]).replaceAll("\"","")}`
-                    li.innerText = `방 제목 : ${JSON.stringify(list[s][0]).replaceAll("\"","")}`;
-                    // li.name = s;
+                    li.textContent = `방 제목 : ${JSON.stringify(list[s][0]).replaceAll("\"","")}`;
+                    li.id = list[s][0];
                     li.appendChild(span);
                     ul.appendChild(li);
                 }
